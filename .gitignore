@@ -8,3 +8,5 @@ target/
 .settings
 
 .DS_Store
+
+application-dev.properties
