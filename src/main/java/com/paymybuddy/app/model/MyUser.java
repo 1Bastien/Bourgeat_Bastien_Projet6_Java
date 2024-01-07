@@ -1,8 +1,13 @@
 package com.paymybuddy.app.model;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.paymybuddy.app.configuration.UserRole;
 
 import jakarta.persistence.Column;
@@ -12,16 +17,14 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import jakarta.persistence.JoinColumn;
 
 @Entity
 @Table(name = "my_user", uniqueConstraints = {
@@ -72,9 +75,8 @@ public class MyUser {
 	@Column(nullable = false)
 	private String billingAddress;
 
-	@ManyToMany
-	@JoinTable(name = "user_contacts", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "contact_id"))
-	private List<MyUser> contactList;
+	@Column(columnDefinition = "json")
+	private String contactListJson;
 
 	@OneToMany(mappedBy = "sender")
 	private List<Transaction> sentTransactions;
@@ -146,14 +148,6 @@ public class MyUser {
 		this.billingAddress = billingAddress;
 	}
 
-	public List<MyUser> getContactList() {
-		return contactList;
-	}
-
-	public void setContactList(List<MyUser> contactList) {
-		this.contactList = contactList;
-	}
-
 	public List<Transaction> getSentTransactions() {
 		return sentTransactions;
 	}
@@ -168,5 +162,41 @@ public class MyUser {
 
 	public void setReceivedTransactions(List<Transaction> receivedTransactions) {
 		this.receivedTransactions = receivedTransactions;
+	}
+
+	@Valid
+	public List<String> getContactList() {
+		ObjectMapper objectMapper = new ObjectMapper();
+		try {
+			List<String> contactList = objectMapper.readValue(contactListJson, new TypeReference<List<String>>() {
+			});
+			validateEmails(contactList);
+			return contactList;
+		} catch (IOException e) {
+			return new ArrayList<>();
+		}
+	}
+
+	public void setContactList(List<String> contactList) {
+		validateEmails(contactList);
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		try {
+			this.contactListJson = objectMapper.writeValueAsString(contactList);
+		} catch (JsonProcessingException e) {
+			this.contactListJson = null;
+		}
+	}
+
+	private void validateEmails(List<String> emails) {
+		for (String email : emails) {
+			if (!isValidEmail(email)) {
+				throw new IllegalArgumentException("Invalid email address: " + email);
+			}
+		}
+	}
+
+	private boolean isValidEmail(String email) {
+		return email.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,6}$");
 	}
 }

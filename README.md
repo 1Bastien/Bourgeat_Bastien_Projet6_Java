@@ -5,7 +5,7 @@ Pay My Buddy est une application de transfert bancaire entre particulier. (Proje
 
 # Diagramme de classe UML 
 
-![Diagramme de classe UML](/ressources/UML.png)
+![Diagramme de classe UML](/ressources/Diagramme_classe_UML.png)
 
 
 # Modèle physique de données
@@ -20,20 +20,10 @@ CREATE TABLE user (
     role VARCHAR(5) NOT NULL,
     balance DECIMAL(10,2) DEFAULT 0.00 NOT NULL,
     billing_address VARCHAR(150) NOT NULL,
+    contact_list_json JSON,
     
     CONSTRAINT ck_user_balance CHECK (balance > 0)
 );
-
-CREATE TABLE user_contacts (
-    user_id BIGINT NOT NULL,
-    contact_id BIGINT NOT NULL,
-    
-    PRIMARY KEY (user_id, contact_id),
-    
-    CONSTRAINT fk_user_contacts_user_id FOREIGN KEY (user_id) REFERENCES user (id),
-    CONSTRAINT fk_user_contacts_contact_id FOREIGN KEY (contact_id) REFERENCES user (id)
-);
-
 
 CREATE TABLE transaction (
     transaction_id BIGINT PRIMARY KEY AUTO_INCREMENT,
