@@ -1,26 +1,23 @@
 package com.paymybuddy.app.model;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.paymybuddy.app.configuration.UserRole;
 
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -56,9 +53,9 @@ public class MyUser {
 	@Column(nullable = false, unique = true)
 	private String email;
 
-	@NotNull(groups = ExistingUser.class)
-	@NotBlank(groups = ExistingUser.class, message = "Veuillez fournir un mot de passe")
-	@Size(groups = ExistingUser.class, min = 7, message = "Le mot de passe doit contenir au moins 7 caractères")
+	@NotNull
+	@NotBlank(message = "Veuillez fournir un mot de passe")
+	@Size(min = 7, message = "Le mot de passe doit contenir au moins 7 caractères")
 	@Column(nullable = false)
 	private String password;
 
@@ -75,8 +72,12 @@ public class MyUser {
 	@Column(nullable = false)
 	private String billingAddress;
 
-	@Column(columnDefinition = "json")
-	private String contactListJson;
+	@Size(max = 30, message = "Le numéro de compte bancaire doit contenir au maximum 30 caractères")
+	private String bankAccountNumber;
+
+	@ElementCollection
+	@CollectionTable(name = "contact_list", joinColumns = @JoinColumn(name = "user_id"))
+	private List<String> contactList = new ArrayList<>();
 
 	@OneToMany(mappedBy = "sender")
 	private List<Transaction> sentTransactions;
@@ -164,39 +165,19 @@ public class MyUser {
 		this.receivedTransactions = receivedTransactions;
 	}
 
-	@Valid
 	public List<String> getContactList() {
-		ObjectMapper objectMapper = new ObjectMapper();
-		try {
-			List<String> contactList = objectMapper.readValue(contactListJson, new TypeReference<List<String>>() {
-			});
-			validateEmails(contactList);
-			return contactList;
-		} catch (IOException e) {
-			return new ArrayList<>();
-		}
+		return contactList;
 	}
 
 	public void setContactList(List<String> contactList) {
-		validateEmails(contactList);
-
-		ObjectMapper objectMapper = new ObjectMapper();
-		try {
-			this.contactListJson = objectMapper.writeValueAsString(contactList);
-		} catch (JsonProcessingException e) {
-			this.contactListJson = null;
-		}
+		this.contactList = contactList;
 	}
 
-	private void validateEmails(List<String> emails) {
-		for (String email : emails) {
-			if (!isValidEmail(email)) {
-				throw new IllegalArgumentException("Invalid email address: " + email);
-			}
-		}
+	public String getBankAccountNumber() {
+		return bankAccountNumber;
 	}
 
-	private boolean isValidEmail(String email) {
-		return email.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,6}$");
+	public void setBankAccountNumber(String bankAccountNumber) {
+		this.bankAccountNumber = bankAccountNumber;
 	}
 }

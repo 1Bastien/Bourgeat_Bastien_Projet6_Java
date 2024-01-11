@@ -11,8 +11,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
 
 @Entity
@@ -41,8 +41,14 @@ public class Transaction {
 	private BigDecimal amount;
 
 	@NotNull
+	@Digits(integer = 10, fraction = 2)
+	@Positive(message = "Le montant doit être positif")
 	@Column(nullable = false)
-	@FutureOrPresent(message = "La date de transaction doit être présente ou future")
+	private BigDecimal fee;
+
+	@NotNull
+	@Column(nullable = false)
+	@PastOrPresent(message = "La date de transaction doit être présente")
 	private LocalDateTime transactionDate;
 
 	public long getId() {
@@ -83,5 +89,13 @@ public class Transaction {
 
 	public void setTransactionDate(LocalDateTime transactionDate) {
 		this.transactionDate = transactionDate;
+	}
+
+	public BigDecimal getFee() {
+		return fee;
+	}
+
+	public void setFee(BigDecimal fee) {
+		this.fee = fee;
 	}
 }
