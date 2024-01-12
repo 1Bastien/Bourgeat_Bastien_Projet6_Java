@@ -28,17 +28,17 @@ public class SpringSecurityConfig {
 		logger.info("Configuring security filter chain");
 
 		return http.authorizeHttpRequests(auth -> {
-			auth.requestMatchers("/account").hasAnyRole("USER");
+			auth.requestMatchers("/userAccount").hasAnyRole("USER");
 			auth.requestMatchers("/transfer").hasAnyRole("USER");
+			auth.requestMatchers("/contactList").hasAnyRole("USER");
+			auth.requestMatchers("/reloadAccount").hasAnyRole("USER");
+			auth.requestMatchers("/transferToBank").hasAnyRole("USER");
 			auth.anyRequest().permitAll();
 		}).formLogin(form -> form.loginPage("/login").permitAll().defaultSuccessUrl("/userAccount"))
 				.logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
 						.invalidateHttpSession(true).clearAuthentication(true).logoutSuccessUrl("/login?logout"))
-				.rememberMe(rememberMe -> rememberMe
-					            .key("uniqueAndSecret")
-					            .tokenValiditySeconds(86400))
-				.csrf(Customizer.withDefaults())
-				.build();
+				.rememberMe(rememberMe -> rememberMe.key("uniqueAndSecret").tokenValiditySeconds(86400))
+				.csrf(Customizer.withDefaults()).build();
 	}
 
 	@Bean
