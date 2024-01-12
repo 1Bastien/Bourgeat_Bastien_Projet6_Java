@@ -30,7 +30,8 @@ public class UserAccountController {
 	public String postAccount(@Valid @ModelAttribute("user") UserDTO user, BindingResult result,
 			RedirectAttributes redirectAttributes) throws Exception {
 		if (result.hasErrors()) {
-			return "userAccount";
+			redirectAttributes.addFlashAttribute("error", "Les informations n'ont pas été modifiées");
+			return "redirect:/userAccount";
 		}
 
 		return accountService.postAccount(user, redirectAttributes);
