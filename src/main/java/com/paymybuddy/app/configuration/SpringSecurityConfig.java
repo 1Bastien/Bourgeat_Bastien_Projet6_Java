@@ -28,11 +28,10 @@ public class SpringSecurityConfig {
 		logger.info("Configuring security filter chain");
 
 		return http.authorizeHttpRequests(auth -> {
-			auth.requestMatchers("/admin").hasRole("ADMIN");
-			auth.requestMatchers("/account").hasAnyRole("USER", "ADMIN");
-			auth.requestMatchers("/transfer").hasAnyRole("USER", "ADMIN");
+			auth.requestMatchers("/account").hasAnyRole("USER");
+			auth.requestMatchers("/transfer").hasAnyRole("USER");
 			auth.anyRequest().permitAll();
-		}).formLogin(form -> form.loginPage("/login").permitAll().defaultSuccessUrl("/account"))
+		}).formLogin(form -> form.loginPage("/login").permitAll().defaultSuccessUrl("/userAccount"))
 				.logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
 						.invalidateHttpSession(true).clearAuthentication(true).logoutSuccessUrl("/login?logout"))
 				.rememberMe(rememberMe -> rememberMe
@@ -56,5 +55,4 @@ public class SpringSecurityConfig {
 				.passwordEncoder(bCryptPasswordEncoder);
 		return authenticationManagerBuilder.build();
 	}
-	
 }
