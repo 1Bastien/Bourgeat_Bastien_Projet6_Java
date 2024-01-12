@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.paymybuddy.app.DTO.PasswordDTO;
 import com.paymybuddy.app.DTO.UserDTO;
+import com.paymybuddy.app.mapper.MyUserMapper;
 import com.paymybuddy.app.model.MyUser;
 import com.paymybuddy.app.repository.MyUserRepository;
 
@@ -24,9 +25,13 @@ public class UserAccountService {
 
 	private PasswordEncoder passwordEncoder;
 
-	public UserAccountService(MyUserRepository myUserRepository, PasswordEncoder passwordEncoder) {
+	private MyUserMapper myUserMapper;
+
+	public UserAccountService(MyUserRepository myUserRepository, PasswordEncoder passwordEncoder,
+			MyUserMapper myUserMapper) {
 		this.myUserRepository = myUserRepository;
 		this.passwordEncoder = passwordEncoder;
+		this.myUserMapper = myUserMapper;
 	}
 
 	@Transactional(readOnly = true)
@@ -37,12 +42,7 @@ public class UserAccountService {
 
 			MyUser myUser = myUserRepository.findByEmail(authentication.getName()).get();
 
-			UserDTO user = new UserDTO();
-			user.setFirstName(myUser.getFirstName());
-			user.setLastName(myUser.getLastName());
-			user.setBillingAddress(myUser.getBillingAddress());
-			user.setBankAccountNumber(myUser.getBankAccountNumber());
-
+			UserDTO user = myUserMapper.myUserToUserDTO(myUser);
 			model.addAttribute("user", user);
 
 			PasswordDTO passwordDTO = new PasswordDTO();
@@ -64,10 +64,7 @@ public class UserAccountService {
 
 			MyUser myUser = myUserRepository.findByEmail(authentication.getName()).get();
 
-			myUser.setFirstName(user.getFirstName());
-			myUser.setLastName(user.getLastName());
-			myUser.setBillingAddress(user.getBillingAddress());
-			myUser.setBankAccountNumber(user.getBankAccountNumber());
+			myUserMapper.updateMyUserFromDTO(user, myUser);
 
 			myUserRepository.save(myUser);
 
@@ -90,7 +87,7 @@ public class UserAccountService {
 
 			if (passwordEncoder.matches(passwordDTO.getOldPassword(), myUser.getPassword())) {
 
-				myUser.setPassword(passwordEncoder.encode(passwordDTO.getNewPassword()));
+				myUserMapper.updateMyUserFromDTO(passwordEncoder.encode(passwordDTO.getNewPassword()), myUser);
 				myUserRepository.save(myUser);
 
 				redirectAttributes.addFlashAttribute("success", "Mot de passe mis à jour");

@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.paymybuddy.app.DTO.AmountDTO;
+import com.paymybuddy.app.mapper.MyUserMapper;
 import com.paymybuddy.app.model.MyUser;
 import com.paymybuddy.app.repository.MyUserRepository;
 
@@ -24,9 +25,13 @@ public class BankAccountService {
 
 	private MyUserRepository myUserRepository;
 
-	public BankAccountService(BankConnectionService bankConnectionService, MyUserRepository myUserRepository) {
+	private MyUserMapper myUserMapper;
+
+	public BankAccountService(BankConnectionService bankConnectionService, MyUserRepository myUserRepository,
+			MyUserMapper myUserMapper) {
 		this.bankConnectionService = bankConnectionService;
 		this.myUserRepository = myUserRepository;
+		this.myUserMapper = myUserMapper;
 	}
 
 	@Transactional(readOnly = true)
@@ -62,14 +67,13 @@ public class BankAccountService {
 				return "redirect:/transferToBank";
 			}
 
-			BigDecimal amount = amountDTO.getAmount();
-
-			if (!bankConnectionService.transferToBankAccount(myUser, amount)) {
+			if (!bankConnectionService.transferToBankAccount(myUser, amountDTO.getAmount())) {
 				redirectAttributes.addFlashAttribute("error", "La banque a refusé le transfert");
 				return "redirect:/transferToBank";
 			}
 
-			myUser.setBalance(myUser.getBalance().subtract(amount));
+			myUserMapper.updateMyUserFromDTO(myUser.getBalance().subtract(amountDTO.getAmount()), myUser);
+
 			myUserRepository.save(myUser);
 
 			redirectAttributes.addFlashAttribute("success", "Le montant a été transféré sur votre compte bancaire");
@@ -94,7 +98,8 @@ public class BankAccountService {
 				return "redirect:/reloadAccount";
 			}
 
-			myUser.setBalance(myUser.getBalance().add(amount));
+			myUserMapper.updateMyUserFromDTO(myUser.getBalance().add(amount), myUser);
+			
 			myUserRepository.save(myUser);
 
 			redirectAttributes.addFlashAttribute("success", "Le montant a été transféré sur votre compte PayMyBuddy");

@@ -24,7 +24,7 @@ public class ContactListService {
 
 	@Autowired
 	private MyUserRepository myUserRepository;
-	
+
 	@Transactional
 	public String addOrDelContact(ContactDTO contactDTO, Boolean addOrDel, RedirectAttributes redirectAttributes)
 			throws Exception {
@@ -50,26 +50,25 @@ public class ContactListService {
 
 			List<String> contactList = myUser.getContactList();
 
+			boolean contactExists = contactList.contains(contactDTO.getContact());
+
 			if (addOrDel) {
-				if (contactList.contains(contact)) {
+				if (contactExists) {
 					redirectAttributes.addFlashAttribute("error", "Le contact est déjà dans la liste");
-					return "redirect:/contactList";
 				} else {
 					contactList.add(contact);
 					redirectAttributes.addFlashAttribute("success", "Contact ajouté");
 				}
 			} else {
-				if (contactList.contains(contact)) {
+				if (contactExists) {
 					contactList.remove(contact);
 					redirectAttributes.addFlashAttribute("success", "Contact supprimé");
 				} else {
 					redirectAttributes.addFlashAttribute("error", "Le contact n'est pas dans la liste");
-					return "redirect:/contactList";
 				}
 			}
 
 			myUser.setContactList(contactList);
-
 			myUserRepository.save(myUser);
 
 		} catch (Exception e) {

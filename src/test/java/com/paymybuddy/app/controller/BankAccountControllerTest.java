@@ -6,6 +6,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import java.math.BigDecimal;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -47,8 +49,39 @@ public class BankAccountControllerTest {
 	@WithMockUser(username = "john@test.com", roles = "USER")
 	void testReloadAccount() throws Exception {
 		AmountDTO amountDTO = new AmountDTO();
+		amountDTO.setAmount(BigDecimal.valueOf(100));
 
 		mockMvc.perform(post("/reloadAccount").with(csrf()).flashAttr("amountDTO", amountDTO))
-				.andExpect(status().isOk());
+				.andExpect(status().isOk()).andExpect(view().name("reloadAccount"));
+	}
+
+	@Test
+	@WithMockUser(username = "john@test.com", roles = "USER")
+	void testReloadAccountWithValidationErrors() throws Exception {
+		AmountDTO amountDTO = new AmountDTO();
+		amountDTO.setAmount(BigDecimal.valueOf(-1));
+
+		mockMvc.perform(post("/reloadAccount").with(csrf()).flashAttr("amountDTO", amountDTO))
+				.andExpect(status().isOk()).andExpect(view().name("reloadAccount"));
+	}
+
+	@Test
+	@WithMockUser(username = "john@test.com", roles = "USER")
+	void testTransferToBank() throws Exception {
+		AmountDTO amountDTO = new AmountDTO();
+		amountDTO.setAmount(BigDecimal.valueOf(100));
+
+		mockMvc.perform(post("/transferToBank").with(csrf()).flashAttr("amountDTO", amountDTO))
+				.andExpect(status().isOk()).andExpect(view().name("transferToBank"));
+	}
+
+	@Test
+	@WithMockUser(username = "john@test.com", roles = "USER")
+	void testTransferToBankWithErrors() throws Exception {
+		AmountDTO amountDTO = new AmountDTO();
+		amountDTO.setAmount(BigDecimal.valueOf(-1));
+
+		mockMvc.perform(post("/transferToBank").with(csrf()).flashAttr("amountDTO", amountDTO))
+				.andExpect(status().isOk()).andExpect(view().name("transferToBank"));
 	}
 }
