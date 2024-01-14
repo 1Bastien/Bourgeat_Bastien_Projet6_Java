@@ -55,6 +55,7 @@ public class ContactListService {
 			if (addOrDel) {
 				if (contactExists) {
 					redirectAttributes.addFlashAttribute("error", "Le contact est déjà dans la liste");
+					return "redirect:/contactList";
 				} else {
 					contactList.add(contact);
 					redirectAttributes.addFlashAttribute("success", "Contact ajouté");
@@ -65,6 +66,7 @@ public class ContactListService {
 					redirectAttributes.addFlashAttribute("success", "Contact supprimé");
 				} else {
 					redirectAttributes.addFlashAttribute("error", "Le contact n'est pas dans la liste");
+					return "redirect:/contactList";
 				}
 			}
 
