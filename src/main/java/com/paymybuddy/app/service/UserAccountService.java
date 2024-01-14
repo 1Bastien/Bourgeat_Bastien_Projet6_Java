@@ -95,9 +95,7 @@ public class UserAccountService {
 			} else {
 				redirectAttributes.addFlashAttribute("error", "Mot de passe incorrect");
 			}
-		} catch (
-
-		Exception e) {
+		} catch (Exception e) {
 			logger.error("Error updating password", e);
 			throw new Exception("Error updating password", e);
 		}
