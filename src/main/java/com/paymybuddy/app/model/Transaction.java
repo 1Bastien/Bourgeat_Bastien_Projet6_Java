@@ -41,7 +41,6 @@ public class Transaction {
 	private BigDecimal amount;
 
 	@NotNull
-	@Digits(integer = 10, fraction = 2)
 	@Positive(message = "Le montant doit être positif")
 	@Column(nullable = false)
 	private BigDecimal fee;
