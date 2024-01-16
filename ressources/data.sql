@@ -8,8 +8,6 @@ CREATE TABLE user (
     balance DECIMAL(10,2) DEFAULT 0.00 NOT NULL,
     billing_address VARCHAR(150) NOT NULL,
     bankAccountNumber VARCHAR(30),
-    
-    CONSTRAINT ck_user_balance CHECK (balance > 0)
 );
 
 CREATE TABLE contact_list (
