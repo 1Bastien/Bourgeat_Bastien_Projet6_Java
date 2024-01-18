@@ -5,7 +5,7 @@ Pay My Buddy est une application de transfert bancaire entre particulier. (Proje
 
 # Diagramme de classe UML 
 
-![Diagramme de classe UML](/ressources/UML.png)
+![Diagramme de classe UML](/ressources/Diagramme-UML.png)
 
 
 # Modèle physique de données
