@@ -43,14 +43,14 @@
 								</div>
 
 								<div class="form-group mb-3">
-									<label for="lastName">Last Name:</label>
+									<label for="lastName">Nom :</label>
 									<input type="text" id="lastName" class="form-control" th:field="*{lastName}" />
 									<small th:if="${#fields.hasErrors('lastName')}" class="text-danger"
 										th:text="${#fields.errors('lastName')}"></small>
 								</div>
 
 								<div class="form-group mb-3">
-									<label for="billingAddress">Billing Address :</label>
+									<label for="billingAddress">Adresse :</label>
 									<input type="text" id="billingAddress" class="form-control"
 										th:field="*{billingAddress}" />
 									<small th:if="${#fields.hasErrors('billingAddress')}" class="text-danger"
@@ -58,7 +58,7 @@
 								</div>
 
 								<div class="form-group mb-3">
-									<label for="bankAccountNumber">Numeros de compte bancaire :</label>
+									<label for="bankAccountNumber">Numéros de compte bancaire :</label>
 									<input type="text" id="bankAccountNumber" class="form-control"
 										th:field="*{bankAccountNumber}" />
 									<small th:if="${#fields.hasErrors('bankAccountNumber')}" class="text-danger"
