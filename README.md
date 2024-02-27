@@ -17,6 +17,7 @@ Les technologies suivantes sont utilisées :
 - **Java**
 - **Spring**
 - **MySQL**
+- **Thymleaf**
 - **Jacoco & JUnit**
 - **Spring Security**
 
