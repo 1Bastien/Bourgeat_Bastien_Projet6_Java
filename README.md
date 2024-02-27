@@ -4,6 +4,9 @@
 
 Le but de l'application est de proposer une plateforme de transaction entre amis.
 
+Vous pouvez facilement lancer l'application grâce à ***docker-compose***.
+Vous trouverez également des ***captures d'écran*** du site ci-dessous dans le README.
+
 *PayMyBuddy est une application de transfert d'argent qui facilite les transactions entre utilisateurs, permettant ainsi de gérer plus facilement les finances et de partager des dépenses avec des amis. 
 Elle offre une interface conviviale et des fonctionnalités de gestion de compte, de transfert d'argent et de suivi des transactions.*
 
