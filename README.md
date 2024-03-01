@@ -39,10 +39,13 @@ Les technologies suivantes sont utilisées :
 ## Installation
 
 ```bash
-git clone https://github.com/1Bastien/Bourgeat-Bastien-Projet6-Java
+git clone https://github.com/1Bastien/Bourgeat_Bastien_Projet6_Java
 ```
 ```
 cd Bourgeat_Bastien_Projet6_Java
+```
+```
+mvn clean package
 ```
 ```
 docker-compose up
