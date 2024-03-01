@@ -35,6 +35,7 @@ Les technologies suivantes sont utilisées :
 
 - Java
 - Maven
+- Docker & docker-compose
 
 ## Installation
 
