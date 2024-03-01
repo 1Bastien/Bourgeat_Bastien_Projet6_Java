@@ -17,6 +17,7 @@ Les technologies suivantes sont utilisées :
 - **Java**
 - **Spring**
 - **MySQL**
+- **Docker & docker-compose**
 - **Thymleaf**
 - **Jacoco & JUnit**
 - **Spring Security**
@@ -29,6 +30,23 @@ Les technologies suivantes sont utilisées :
 ## Modèle physique de données
 
 ![Modèle physique de données](/ressources/MPD.png)
+
+## Prérequis
+
+- Java
+- Maven
+
+## Installation
+
+```bash
+git clone https://github.com/1Bastien/Bourgeat-Bastien-Projet6-Java
+```
+```
+cd Bourgeat_Bastien_Projet6_Java
+```
+```
+docker-compose up
+```
 
 ## Illustrations de l'application
 
